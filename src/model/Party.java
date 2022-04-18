@@ -1,4 +1,6 @@
-package model;/*
+package model;
+
+/*
  * model.Party.java
  *
  * Version:
@@ -34,7 +36,6 @@ public class Party {
 	 * 
 	 * @param bowlers	Vector of bowlers that are in this party
 	 */
-		
     public Party( Vector bowlers ) {
 		myBowlers = new Vector(bowlers);
     }
@@ -44,9 +45,18 @@ public class Party {
 	 * 
 	 * @return 	A vector of the bowlers in this party
 	 */
-
     public Vector getMembers() {
 		return myBowlers;
     }
+
+	@Override
+	public String toString() {
+		if (myBowlers.size() == 0) {
+			return "Empty party";
+		} else {
+			Bowler firstBowler = (Bowler) myBowlers.get(0);
+			return firstBowler + "'s model.Party";
+		}
+	}
 
 }

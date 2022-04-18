@@ -51,7 +51,7 @@ public class ControlDesk extends Thread {
 
     /**
      * The collection of Lanes
-     */
+     * */
     private HashSet lanes;
 
     /**
@@ -69,6 +69,9 @@ public class ControlDesk extends Thread {
      */
     private Vector subscribers;
 
+    /**
+     * How long this waits before assigning lanes
+     */
     private final int SLEEP_TIME = 250;
 
     /**
@@ -126,7 +129,7 @@ public class ControlDesk extends Thread {
     }
 
     /**
-     * Iterate through the available lanes and assign the paties in the wait queue if lanes are available.
+     * Iterate through the available lanes and assign the parties in the wait queue if lanes are available.
      */
     public void assignLane() {
         Iterator it = lanes.iterator();
@@ -144,7 +147,7 @@ public class ControlDesk extends Thread {
     }
 
     /**
-     * Creates a party from a Vector of nickNAmes and adds them to the wait queue.
+     * Creates a party from a Vector of nicknames and adds them to the wait queue.
      *
      * @param partyNicks A Vector of NickNames
      */
@@ -172,9 +175,7 @@ public class ControlDesk extends Thread {
 
         for (int i = 0; i < queue.size(); i++) {
             Party currentParty = queue.get(i);
-            Vector<Bowler> partyMembers = currentParty.getMembers();
-            Bowler currentBowler = partyMembers.get(0);
-            String nextParty = currentBowler.getNickName() + "'s model.Party";
+            String nextParty = currentParty.toString();
 
             displayPartyQueue.addElement(nextParty);
         }
@@ -187,7 +188,6 @@ public class ControlDesk extends Thread {
      *
      * @return an int containing the number of lanes represented
      */
-
     public int getNumLanes() {
         return numLanes;
     }
