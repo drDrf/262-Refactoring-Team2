@@ -24,9 +24,8 @@ import java.io.*;
 import java.util.Vector;
 
 public class BowlerFile {
-
-    /** The location of the bowelr database */
-    private static String BOWLER_DAT = "BOWLERS.DAT";
+    /** The location of the bowler database */
+    private static final String BOWLER_DAT = "BOWLERS.DAT";
 
     /**
      * Retrieves bowler information from the database and returns a model.Bowler objects with populated fields.
@@ -36,7 +35,6 @@ public class BowlerFile {
      * @return a model.Bowler object
      *
      */
-
     public static Bowler getBowlerInfo(String nickName) throws IOException, FileNotFoundException {
         BufferedReader in = new BufferedReader(new FileReader(BOWLER_DAT));
         String data;
@@ -96,5 +94,4 @@ public class BowlerFile {
 
         return allBowlers;
     }
-
 }
