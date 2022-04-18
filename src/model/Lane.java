@@ -191,14 +191,15 @@ public class Lane extends Thread implements PinsetterObserver {
 	 * entry point for execution of this lane 
 	 */
 	public void run() {
-		
+		// TODO: Refactor with state. Game is halted, in progress, finished, etc.
+
 		while (true) {
 			if (partyAssigned && !gameFinished) {	// we have a party on this lane, 
 								// so next bower can take a throw
 			
 				while (gameIsHalted) {
 					try {
-						sleep(10);
+						sleep(1000);
 					} catch (Exception e) {}
 				}
 
@@ -245,7 +246,6 @@ public class Lane extends Thread implements PinsetterObserver {
 				
 				System.out.println("result was: " + result);
 				
-				// TODO: send record of scores to control desk
 				if (result == 1) {					// yes, want to play again
 					resetScores();
 					resetBowlerIterator();
@@ -384,6 +384,7 @@ public class Lane extends Thread implements PinsetterObserver {
 		
 		curScores = new int[party.getMembers().size()];
 		cumulScores = new int[party.getMembers().size()][10];
+		// TODO: Possible refactor to remove magic number below
 		finalScores = new int[party.getMembers().size()][128]; //Hardcoding a max of 128 games, bite me.
 		gameNumber = 0;
 		
@@ -433,6 +434,7 @@ public class Lane extends Thread implements PinsetterObserver {
 	 * @return			The bowlers total score
 	 */
 	private int getScore( Bowler Cur, int frame) {
+		// TODO: Refactor with Strategy
 		int[] curScore;
 		int strikeballs = 0;
 		int totalScore = 0;
