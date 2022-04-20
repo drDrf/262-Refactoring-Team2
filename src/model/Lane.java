@@ -134,10 +134,9 @@ package model;
 import view.EndGamePrompt;
 import view.EndGameReport;
 
-import java.util.Vector;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.Date;
+import model.ScoreStrategy.*;
+
+import java.util.*;
 
 public class Lane extends Thread implements PinsetterObserver {	
 	private Party party;
@@ -444,16 +443,35 @@ public class Lane extends Thread implements PinsetterObserver {
 		}
 		int current = 2*(frame - 1)+ball-1;
 		//Iterate through each ball until the current one.
+
+		for( int frameCount = 0; curScore[frameCount*2] != -1 && frameCount<10 ; frameCount +=1){
+			Scoring score;
+			int firstThrow = curScore[frameCount*2];		//the first throw of the frame being calculated
+			int secondThrow = curScore[frameCount*2+1];		//the second throw of the frame being calculated
+
+			if(firstThrow == 10){
+				score = new StrikeScoring(cumulScores[bowlIndex], curScore, frameCount);
+			}else if(firstThrow + secondThrow == 10){
+				score = new SpareScoring(cumulScores[bowlIndex], curScore, frameCount);
+			}else{
+				score = new NormalScoring(cumulScores[bowlIndex], curScore, frameCount);
+			}
+			score.calculate();
+
+		}
+
+/*
 		for (int i = 0; i != current+2; i++){
+
 			//Spare:
 			if( i%2 == 1 && curScore[i - 1] + curScore[i] == 10 && i < current - 1 && i < 19){
 				//This ball was a the second of a spare.  
 				//Also, we're not on the current ball.
 				//Add the next ball to the ith one in cumul.
 				cumulScores[bowlIndex][(i/2)] += curScore[i+1] + curScore[i]; 
-				if (i > 1) {
-					//cumulScores[bowlIndex][i/2] += cumulScores[bowlIndex][i/2 -1];
-				}
+//				if (i > 1) {
+//					//cumulScores[bowlIndex][i/2] += cumulScores[bowlIndex][i/2 -1];
+//				}
 			} else if( i < current && i%2 == 0 && curScore[i] == 10  && i < 18){
 				strikeballs = 0;
 				//This ball is the first ball, and was a strike.
@@ -536,7 +554,9 @@ public class Lane extends Thread implements PinsetterObserver {
 					}
 				}
 			}
-		}
+		}*/
+
+
 		return totalScore;
 	}
 
