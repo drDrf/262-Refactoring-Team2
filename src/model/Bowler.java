@@ -13,7 +13,7 @@ package model;/*
  *     *** empty log message ***
  *
  *     Revision 1.1  2003/01/12 19:09:12  ???
- *     Adding model.Party, model.Lane, model.Bowler, and model.Alley.
+ *     Adding model.Party, model.state.Lane, model.Bowler, and model.Alley.
  *
  */
 

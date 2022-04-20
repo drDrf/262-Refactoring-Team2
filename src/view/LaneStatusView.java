@@ -13,6 +13,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import model.Pinsetter;
+import model.state.Lane;
 
 public class LaneStatusView implements ActionListener, LaneObserver, PinsetterObserver {
 
@@ -61,7 +62,7 @@ public class LaneStatusView implements ActionListener, LaneObserver, PinsetterOb
 
 		Insets buttonMargin = new Insets(4, 4, 4, 4);
 
-		viewLane = new JButton("View model.Lane");
+		viewLane = new JButton("View model.state.Lane");
 		JPanel viewLanePanel = new JPanel();
 		viewLanePanel.setLayout(new FlowLayout());
 		viewLane.addActionListener(this);

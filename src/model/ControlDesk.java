@@ -41,6 +41,8 @@ package model;
  * Class that represents control desk
  */
 
+import model.state.Lane;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;

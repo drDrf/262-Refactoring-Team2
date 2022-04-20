@@ -14,6 +14,7 @@ package view;/* view.ControlDeskView.java
  */
 
 import model.*;
+import model.state.Lane;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -77,10 +78,10 @@ public class ControlDeskView implements ActionListener, ControlDeskObserver {
 		finishedPanel.add(finished);
 		controlsPanel.add(finishedPanel);
 
-		// model.Lane Status Panel
+		// model.state.Lane Status Panel
 		JPanel laneStatusPanel = new JPanel();
 		laneStatusPanel.setLayout(new GridLayout(numLanes, 1));
-		laneStatusPanel.setBorder(new TitledBorder("model.Lane Status"));
+		laneStatusPanel.setBorder(new TitledBorder("model.state.Lane Status"));
 
 		HashSet lanes=controlDesk.getLanes();
 		Iterator it = lanes.iterator();
@@ -91,7 +92,7 @@ public class ControlDeskView implements ActionListener, ControlDeskObserver {
 			curLane.subscribe(laneStat);
 			((Pinsetter)curLane.getPinsetter()).subscribe(laneStat);
 			JPanel lanePanel = laneStat.showLane();
-			lanePanel.setBorder(new TitledBorder("model.Lane" + ++laneCount ));
+			lanePanel.setBorder(new TitledBorder("model.state.Lane" + ++laneCount ));
 			laneStatusPanel.add(lanePanel);
 		}
 

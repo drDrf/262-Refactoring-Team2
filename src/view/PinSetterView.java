@@ -45,7 +45,7 @@ public class PinSetterView implements PinsetterObserver {
     
     public PinSetterView ( int laneNum ) {
 	
-	frame = new JFrame ( "model.Lane " + laneNum + ":" );
+	frame = new JFrame ( "model.state.Lane " + laneNum + ":" );
 	
 	Container cpanel = frame.getContentPane ( );
 	

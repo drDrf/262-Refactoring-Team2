@@ -1,8 +1,8 @@
-package model;
+package model.state;
 /* $Id$
  *
  * Revisions:
- *   $Log: model.Lane.java,v $
+ *   $Log: model.state.Lane.java,v $
  *   Revision 1.52  2003/02/20 20:27:45  ???
  *   Fouls disables.
  *
@@ -64,7 +64,7 @@ package model;
  *   Still not quite working...
  *
  *   Revision 1.30  2003/02/04 13:33:04  ???
- *   model.Lane may very well work now.
+ *   model.state.Lane may very well work now.
  *
  *   Revision 1.29  2003/02/02 23:57:27  ???
  *   fix on pinsetter hack
@@ -79,10 +79,10 @@ package model;
  *   parties can now play more than 1 game on a lane, and lanes are properly released after games
  *
  *   Revision 1.25  2003/02/02 22:52:19  ???
- *   model.Lane compiles
+ *   model.state.Lane compiles
  *
  *   Revision 1.24  2003/02/02 22:50:10  ???
- *   model.Lane compiles
+ *   model.state.Lane compiles
  *
  *   Revision 1.23  2003/02/02 22:47:34  ???
  *   More observering.
@@ -109,7 +109,7 @@ package model;
  *   Worked on scoring.
  *
  *   Revision 1.15  2003/01/30 21:45:08  ???
- *   Fixed speling of received in model.Lane.
+ *   Fixed speling of received in model.state.Lane.
  *
  *   Revision 1.14  2003/01/30 21:29:30  ???
  *   Fixed some MVC stuff
@@ -122,7 +122,7 @@ package model;
  *
  *   Revision 1.11  2003/01/26 22:34:44  ???
  *   Total rewrite of lane and pinsetter for R2's observer model
- *   Added model.Lane/model.Pinsetter Observer
+ *   Added model.state.Lane/model.Pinsetter Observer
  *   Rewrite of scoring algorythm in lane
  *
  *   Revision 1.10  2003/01/26 20:44:05  ???
@@ -131,6 +131,8 @@ package model;
  * 
  */
 
+import model.*;
+import model.state.LaneState;
 import view.EndGamePrompt;
 import view.EndGameReport;
 
@@ -138,8 +140,8 @@ import model.ScoreStrategy.*;
 
 import java.util.*;
 
-public class Lane extends Thread implements PinsetterObserver {	
-	private Party party;
+public class Lane extends Thread implements PinsetterObserver {
+	protected Party party;
 	private Pinsetter setter;
 	private HashMap scores;
 	private Vector subscribers;
@@ -163,7 +165,9 @@ public class Lane extends Thread implements PinsetterObserver {
 	
 	private Bowler currentThrower;			// = the thrower who just took a throw
 
-	/** model.Lane()
+	private LaneState state;
+
+	/** model.state.Lane()
 	 * 
 	 * Constructs a new lane and starts its thread
 	 * 
@@ -185,6 +189,84 @@ public class Lane extends Thread implements PinsetterObserver {
 		this.start();
 	}
 
+	public Party getParty() {
+		return party;
+	}
+
+	protected void setPartyAssigned(boolean assigned) {
+		partyAssigned = assigned;
+	}
+
+	protected int getGameNumber() {
+		return this.gameNumber;
+	}
+
+	protected void setGameNumber(int number) {
+		gameNumber = number;
+	}
+
+	protected int[][] getFinalScores() {
+		return finalScores;
+	}
+
+	protected void setCurrentThrower(Bowler current) {
+		currentThrower = current;
+	}
+
+	protected Bowler getCurrentThrower() {
+		return currentThrower;
+	}
+
+	protected int getFrameNumber() {
+		return frameNumber;
+	}
+
+	protected void setFrameNumber(int number) {
+		frameNumber = number;
+	}
+
+	protected void setGameFinished(boolean finished) {
+		gameFinished = finished;
+
+		if (finished) {
+			state = new FinishedState(this);
+		} else {
+			state = new RunningState(this);
+		}
+	}
+
+	protected int getBowlIndex() {
+		return bowlIndex;
+	}
+
+	protected void setBowlIndex(int index) {
+		bowlIndex = index;
+	}
+
+	protected void setCanThrowAgain(boolean canThrow) {
+		canThrowAgain = canThrow;
+	}
+
+	protected boolean getCanThrowAgain() {
+		return canThrowAgain;
+	}
+
+	protected void setTenthFrameStrike(boolean strike) {
+		tenthFrameStrike = strike;
+	}
+
+	protected int getBall() {
+		return ball;
+	}
+
+	protected void setBall(int ball) {
+		this.ball = ball;
+	}
+
+	protected int[][] getCumulScores() {
+		return cumulScores;
+	}
+
 	/** run()
 	 * 
 	 * entry point for execution of this lane 
@@ -193,91 +275,10 @@ public class Lane extends Thread implements PinsetterObserver {
 		// TODO: Refactor with state. Game is halted, in progress, finished, etc.
 
 		while (true) {
-			if (partyAssigned && !gameFinished) {	// we have a party on this lane, 
-								// so next bower can take a throw
-			
-				while (gameIsHalted) {
-					try {
-						sleep(1000);
-					} catch (Exception e) {}
-				}
-
-
-				if (bowlerIterator.hasNext()) {
-					currentThrower = (Bowler)bowlerIterator.next();
-
-					canThrowAgain = true;
-					tenthFrameStrike = false;
-					ball = 0;
-					while (canThrowAgain) {
-						setter.ballThrown();		// simulate the thrower's ball hiting
-						ball++;
-					}
-					
-					if (frameNumber == 9){
-						finalScores[bowlIndex][gameNumber] = cumulScores[bowlIndex][9];
-						try{
-						Date date = new Date();
-						String dateString = "" + date.getHours() + ":" + date.getMinutes() + " " + date.getMonth() + "/" + date.getDay() + "/" + (date.getYear() + 1900);
-						ScoreHistoryFile.addScore(currentThrower.getNick(), dateString, new Integer(cumulScores[bowlIndex][9]).toString());
-						} catch (Exception e) {System.err.println("Exception in addScore. "+ e );} 
-					}
-
-					
-					setter.reset();
-					bowlIndex++;
-					
-				} else {
-					frameNumber++;
-					resetBowlerIterator();
-					bowlIndex = 0;
-					if (frameNumber > 9) {
-						gameFinished = true;
-						gameNumber++;
-					}
-				}
-			} else if (partyAssigned && gameFinished) {
-				EndGamePrompt egp = new EndGamePrompt( ((Bowler) party.getMembers().get(0)).getNickName() + "'s model.Party" );
-				int result = egp.getResult();
-				egp.distroy();
-				egp = null;
-				
-				
-				System.out.println("result was: " + result);
-				
-				if (result == 1) {					// yes, want to play again
-					resetScores();
-					resetBowlerIterator();
-					
-				} else if (result == 2) {// no, dont want to play another game
-					Vector printVector;	
-					EndGameReport egr = new EndGameReport( ((Bowler)party.getMembers().get(0)).getNickName() + "'s model.Party", party);
-					printVector = egr.getResult();
-					partyAssigned = false;
-					Iterator scoreIt = party.getMembers().iterator();
-					party = null;
-					partyAssigned = false;
-					
-					publish(lanePublish());
-					
-					int myIndex = 0;
-					while (scoreIt.hasNext()){
-						Bowler thisBowler = (Bowler)scoreIt.next();
-						ScoreReport sr = new ScoreReport( thisBowler, finalScores[myIndex++], gameNumber );
-						sr.sendEmail(thisBowler.getEmail());
-						Iterator printIt = printVector.iterator();
-						while (printIt.hasNext()){
-							if (thisBowler.getNick() == (String)printIt.next()){
-								System.out.println("Printing " + thisBowler.getNick());
-								sr.sendPrintout();
-							}
-						}
-
-					}
-				}
+			if (partyAssigned) {
+				state.handleState();
 			}
-			
-			
+
 			try {
 				sleep(10);
 			} catch (Exception e) {}
@@ -344,8 +345,12 @@ public class Lane extends Thread implements PinsetterObserver {
 	 * @pre the party as been assigned
 	 * @post the iterator points to the first bowler in the party
 	 */
-	private void resetBowlerIterator() {
+	protected void resetBowlerIterator() {
 		bowlerIterator = (party.getMembers()).iterator();
+	}
+
+	protected Iterator getBowlerIterator() {
+		return bowlerIterator;
 	}
 
 	/** resetScores()
@@ -355,7 +360,7 @@ public class Lane extends Thread implements PinsetterObserver {
 	 * @pre the party has been assigned
 	 * @post scoring system is initialized
 	 */
-	private void resetScores() {
+	protected void resetScores() {
 		Iterator bowlIt = (party.getMembers()).iterator();
 
 		while ( bowlIt.hasNext() ) {
@@ -368,7 +373,7 @@ public class Lane extends Thread implements PinsetterObserver {
 		
 		
 		
-		gameFinished = false;
+		setGameFinished(false);
 		frameNumber = 0;
 	}
 		
@@ -423,7 +428,7 @@ public class Lane extends Thread implements PinsetterObserver {
 	 * 
 	 * @return		The new lane event
 	 */
-	private LaneEvent lanePublish(  ) {
+	protected LaneEvent lanePublish(  ) {
 		LaneEvent laneEvent = new LaneEvent(party, bowlIndex, currentThrower, cumulScores, scores, frameNumber+1, curScores, ball, gameIsHalted);
 		return laneEvent;
 	}
@@ -623,7 +628,7 @@ public class Lane extends Thread implements PinsetterObserver {
 	}
 
 	/**
-	 * Accessor to get this model.Lane's pinsetter
+	 * Accessor to get this model.state.Lane's pinsetter
 	 * 
 	 * @return		A reference to this lane's pinsetter
 	 */
@@ -637,6 +642,7 @@ public class Lane extends Thread implements PinsetterObserver {
 	 */
 	public void pauseGame() {
 		gameIsHalted = true;
+		state = new HaltedState(this);
 		publish(lanePublish());
 	}
 	
@@ -645,6 +651,13 @@ public class Lane extends Thread implements PinsetterObserver {
 	 */
 	public void unPauseGame() {
 		gameIsHalted = false;
+
+		if (gameFinished) {
+			state = new FinishedState(this);
+		} else {
+			state = new RunningState(this);
+		}
+
 		publish(lanePublish());
 	}
 

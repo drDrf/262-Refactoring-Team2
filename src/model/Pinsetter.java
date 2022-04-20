@@ -47,7 +47,7 @@ package model;/*
  *
  *   Revision 1.8  2003/01/26 22:34:44  ???
  *   Total rewrite of lane and pinsetter for R2's observer model
- *   Added model.Lane/model.Pinsetter Observer
+ *   Added model.state.Lane/model.Pinsetter Observer
  *   Rewrite of scoring algorythm in lane
  *
  *   Revision 1.7  2003/01/19 21:55:24  ???

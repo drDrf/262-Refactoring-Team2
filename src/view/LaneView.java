@@ -1,9 +1,10 @@
 package view;/*
- *  constructs a prototype model.Lane View
+ *  constructs a prototype model.state.Lane View
  *
  */
 
 import model.*;
+import model.state.Lane;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -36,7 +37,7 @@ public class LaneView implements LaneObserver, ActionListener {
 		this.lane = lane;
 
 		initDone = true;
-		frame = new JFrame("model.Lane " + laneNum + ":");
+		frame = new JFrame("model.state.Lane " + laneNum + ":");
 		cpanel = frame.getContentPane();
 		cpanel.setLayout(new BorderLayout());
 
