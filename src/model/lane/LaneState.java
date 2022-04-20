@@ -1,4 +1,4 @@
-package model.state;
+package model.lane;
 
 public abstract class LaneState {
     private Lane lane;

@@ -13,7 +13,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import model.Pinsetter;
-import model.state.Lane;
+import model.lane.Lane;
 
 public class LaneStatusView implements ActionListener, LaneObserver, PinsetterObserver {
 

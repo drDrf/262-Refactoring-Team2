@@ -41,7 +41,7 @@ package model;
  * Class that represents control desk
  */
 
-import model.state.Lane;
+import model.lane.Lane;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

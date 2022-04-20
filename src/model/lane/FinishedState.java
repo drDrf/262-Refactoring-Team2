@@ -1,4 +1,4 @@
-package model.state;
+package model.lane;
 
 import model.*;
 import view.EndGamePrompt;

@@ -1,4 +1,4 @@
-package model.state;
+package model.lane;
 
 import static java.lang.Thread.sleep;
 

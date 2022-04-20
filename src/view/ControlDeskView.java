@@ -14,7 +14,7 @@ package view;/* view.ControlDeskView.java
  */
 
 import model.*;
-import model.state.Lane;
+import model.lane.Lane;
 
 import java.awt.*;
 import java.awt.event.*;
