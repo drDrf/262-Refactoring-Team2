@@ -460,7 +460,7 @@ public class Lane extends Thread implements PinsetterObserver {
 
 		}
 
-/*
+		/*
 		for (int i = 0; i != current+2; i++){
 
 			//Spare:
