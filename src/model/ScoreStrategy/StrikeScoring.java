@@ -22,8 +22,8 @@ public class StrikeScoring implements Scoring{
         frameScore += 10;
         int addition = 2;
         for(int i = 1 ; i<5; i++){
-            if(curScore[bowlThrows+1] != -1 && addition >0){
-                frameScore += curScore[bowlThrows + 1];
+            if(curScore[bowlThrows+i] != -1 && addition >0){
+                frameScore += curScore[bowlThrows + i];
                 addition --;
             }
         }
