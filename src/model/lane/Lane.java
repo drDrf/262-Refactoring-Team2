@@ -293,10 +293,9 @@ public class Lane extends Thread implements PinsetterObserver {
 	 */
 	public void receivePinsetterEvent(PinsetterEvent pe) {
 		
-			if (pe.pinsDownOnThisThrow() >=  0) {			// this is a real throw
-				markScore(currentThrower, frameNumber + 1, pe.getThrowNumber(), pe.pinsDownOnThisThrow());
-	
-				// next logic handles the ?: what conditions dont allow them another throw?
+			if (pe.pinsDownOnThisThrow() >=  0) {// this is a real throw
+				markScore(currentThrower, frameNumber + 1,
+						pe.getThrowNumber(), pe.pinsDownOnThisThrow());
 				// handle the case of 10th frame first
 				if (frameNumber == 9) {
 					beforeTenthFrame(pe);
@@ -307,7 +306,7 @@ public class Lane extends Thread implements PinsetterObserver {
 			}
 	}
 
-	private void beforeTenthFrame(PinsetterEvent pe) {
+	private void tenthFramePE(PinsetterEvent pe) {
 		if (pe.totalPinsDown() == 10) {
 			setter.resetPins();
 			if(pe.getThrowNumber() == 1) {
@@ -324,7 +323,7 @@ public class Lane extends Thread implements PinsetterObserver {
 		}
 	}
 
-	private void tenthFramePE(PinsetterEvent pe) {
+	private void beforeTenthFrame(PinsetterEvent pe) {
 		if (pe.pinsDownOnThisThrow() == 10) {		// threw a strike
 			canThrowAgain = false;
 			//publish( lanePublish() );
