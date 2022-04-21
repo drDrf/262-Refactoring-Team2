@@ -298,10 +298,10 @@ public class Lane extends Thread implements PinsetterObserver {
 						pe.getThrowNumber(), pe.pinsDownOnThisThrow());
 				// handle the case of 10th frame first
 				if (frameNumber == 9) {
-					beforeTenthFrame(pe);
+					tenthFramePE(pe);
 
 				} else { // its not the 10th frame
-					tenthFramePE(pe);
+					beforeTenthFrame(pe);
 				}
 			}
 	}
